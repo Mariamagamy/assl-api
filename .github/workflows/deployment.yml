@@ -1,0 +1,20 @@
+name: Deployment Workflow
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Set up Azure CLI
+        uses: azure/CLI-action@v1
+      - name: Login to Azure
+        run: az login --service-principal -u ${{ secrets.AZURE_USERNAME }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+      - name: Deploy to Azure
+        run: |
+          az webapp up --name mylibraryapi --resource-group myResourceGroup --plan myAppServicePlan
